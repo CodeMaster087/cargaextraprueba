@@ -1,0 +1,10 @@
+# Ignorar carpetas de dependencias y builds
+/backend/node_modules
+/frontend/node_modules
+/frontend/dist
+
+# Archivos del sistema operativo y logs
+.DS_Store
+*.log
+.env
+/tmp

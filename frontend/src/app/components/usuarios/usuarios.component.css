@@ -1,0 +1,39 @@
+/* Estilos específicos para el componente Usuarios */
+
+.users-table {
+    margin-top: 20px;
+}
+
+.ml-2 {
+  margin-left: 8px; /* Espacio a la izquierda del botón de eliminar */
+}
+
+/* Clases para los badges (insignias) de Materialize */
+/* Se definen estilos para los roles, usando !important para asegurar la prevalencia */
+
+/* Cliente (Azul) */
+.badge.blue[data-badge-caption="Cliente"] {
+    background-color: #2196F3 !important; 
+}
+
+/* Conductor (Verde) */
+.badge.green[data-badge-caption="Conductor"] {
+    background-color: #4CAF50 !important; 
+}
+
+/* Admin (Naranja) */
+.badge.orange[data-badge-caption="Admin"] {
+    background-color: #FF9800 !important; 
+}
+
+/* Ajuste para el Select de Materialize: 
+   Asegura que se muestre correctamente en navegadores y con Angular. */
+select {
+    display: block !important;
+}
+
+/* Ajuste visual para el label del select (Materialize necesita esto para el efecto flotante) */
+.input-field select ~ label.active {
+    transform: translateY(-14px) scale(0.8);
+    transform-origin: 0 100%;
+}

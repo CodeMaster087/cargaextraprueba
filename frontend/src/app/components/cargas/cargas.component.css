@@ -1,0 +1,50 @@
+/* Estilos específicos para el componente Cargas (E:\Documents\cargaextraprueba\frontend\src\app\components\cargas\cargas.component.css) */
+
+.cargas-table {
+    /* Margen superior para separar la tabla de los botones o encabezado */
+    margin-top: 20px;
+}
+
+/* Espaciado entre botones de acción */
+.ml-2 {
+    margin-left: 8px; 
+}
+
+/* Estilos para los badges (etiquetas) que identifican el estado de la carga.
+   Usamos !important para asegurar que Materialize no anule los colores. */
+
+/* Estado Pendiente (Amarillo/Naranja) */
+.badge.orange[data-badge-caption="Pendiente"] {
+    background-color: #FFC107 !important; /* Amarillo más visible */
+    color: #000 !important; /* Texto oscuro para contraste */
+}
+
+/* Estado Asignada (Azul) */
+.badge.blue[data-badge-caption="Asignada"] {
+    background-color: #2196F3 !important; 
+}
+
+/* Estado En Tránsito (Púrpura) */
+.badge.purple[data-badge-caption="En Tránsito"] {
+    background-color: #9C27B0 !important;
+}
+
+/* Estado Entregada (Verde) */
+.badge.green[data-badge-caption="Entregada"] {
+    background-color: #4CAF50 !important;
+}
+
+/* Estado Cancelada (Rojo) */
+.badge.red[data-badge-caption="Cancelada"] {
+    background-color: #F44336 !important;
+}
+
+/* Ajuste general para selectores de Materialize */
+select {
+    display: block !important;
+}
+
+.input-field select ~ label.active {
+    transform: translateY(-14px) scale(0.8);
+    transform-origin: 0 100%;
+}

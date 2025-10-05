@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="row">
+    <div class="col s12">
+      <h3 class="center-align indigo-text text-darken-4">Gestión de Usuarios</h3>
+      <button class="waves-effect waves-light btn modal-trigger indigo darken-2" (click)="abrirModalCrear()">
+        <i class="material-icons left">add</i>Nuevo Usuario
+      </button>
+
+      <!-- Tabla de Usuarios -->
+      <table class="striped responsive-table z-depth-1 hoverable users-table">
+        <thead>
+          <tr class="indigo lighten-5">
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Usamos *ngFor para iterar sobre la lista de usuarios -->
+          <tr *ngFor="let usuario of usuarios">
+            <td>{{ usuario._id }}</td>
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>
+              <!-- Aplicamos clases condicionales para el estilo del badge según el rol -->
+              <span class="new badge" 
+                    [attr.data-badge-caption]="usuario.rol" 
+                    [class.blue]="usuario.rol === 'Cliente'" 
+                    [class.green]="usuario.rol === 'Conductor'"
+                    [class.orange]="usuario.rol === 'Admin'"
+                    data-badge-caption>
+              </span>
+            </td>
+            <td>
+              <button class="btn-small waves-effect waves-light blue" (click)="abrirModalEditar(usuario)">
+                <i class="material-icons">edit</i>
+              </button>
+              <button class="btn-small waves-effect waves-light red darken-1 ml-2" (click)="eliminarUsuario(usuario._id)">
+                <i class="material-icons">delete</i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="usuarios.length === 0">
+            <td colspan="5" class="center-align grey-text">No hay usuarios registrados.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Crear/Editar Usuario -->
+<div id="modalUsuario" class="modal">
+  <div class="modal-content">
+    <h4 class="center-align">{{ isEditing ? 'Editar Usuario' : 'Crear Nuevo Usuario' }}</h4>
+    <form (ngSubmit)="guardarUsuario()">
+      <div class="row">
+        <!-- Campo Nombre -->
+        <div class="input-field col s12 m6">
+          <input id="nombre" type="text" [(ngModel)]="usuarioSeleccionado.nombre" name="nombre" required>
+          <label for="nombre" [class.active]="usuarioSeleccionado.nombre">Nombre</label>
+        </div>
+        <!-- Campo Email -->
+        <div class="input-field col s12 m6">
+          <input id="email" type="email" [(ngModel)]="usuarioSeleccionado.email" name="email" required>
+          <label for="email" [class.active]="usuarioSeleccionado.email">Email</label>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Campo Contraseña (solo obligatorio al crear) -->
+        <div class="input-field col s12 m6">
+          <input id="password" type="password" [(ngModel)]="usuarioSeleccionado.password" name="password" [required]="!isEditing">
+          <label for="password">Contraseña {{ isEditing ? '(dejar vacío para no cambiar)' : '*' }}</label>
+        </div>
+        <!-- Selector de Rol -->
+        <div class="input-field col s12 m6">
+          <!-- IMPORTANTE: El select de Materialize debe tener 'browser-default'
+               y la etiqueta debe llevar la clase 'active' para que funcione correctamente
+               con Angular y Materialize al cargar los datos. -->
+          <select id="rol" [(ngModel)]="usuarioSeleccionado.rol" name="rol" required>
+            <option value="" disabled>Seleccione un Rol</option>
+            <option value="Cliente">Cliente</option>
+            <option value="Conductor">Conductor</option>
+            <option value="Admin">Admin</option>
+          </select>
+          <label for="rol" [class.active]="usuarioSeleccionado.rol">Rol</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-close waves-effect waves-red btn-flat">Cancelar</button>
+        <button type="submit" class="waves-effect waves-green btn-flat indigo-text text-darken-4">
+          {{ isEditing ? 'Guardar Cambios' : 'Crear Usuario' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

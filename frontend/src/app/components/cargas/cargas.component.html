@@ -1,0 +1,139 @@
+<div class="container">
+  <div class="row">
+    <div class="col s12">
+      <h3 class="center-align purple-text text-darken-4">Gestión de Cargas y Mercancía</h3>
+      <a class="waves-effect waves-light btn modal-trigger purple darken-2" (click)="abrirModalCrear()">
+        <i class="material-icons left">add</i>Nueva Carga
+      </a>
+
+      <!-- Tabla de Cargas -->
+      <table class="striped responsive-table z-depth-1 hoverable mt-3">
+        <thead>
+          <tr class="purple lighten-5">
+            <th>ID</th>
+            <th>Descripción</th>
+            <th>Peso (kg)</th>
+            <th>Origen / Destino</th>
+            <th>Propietario</th>
+            <th>Fecha Recogida</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Usamos *ngFor para iterar sobre la lista de cargas -->
+          <tr *ngFor="let carga of cargas">
+            <td>{{ carga._id }}</td>
+            <td>{{ carga.descripcion }}</td>
+            <td>{{ carga.peso | number:'1.0-2' }}</td>
+            <td>{{ carga.origen }} <i class="material-icons tiny">arrow_forward</i> {{ carga.destino }}</td>
+            <td>{{ carga.propietario_nombre }}</td>
+            <td>{{ carga.fecha_recogida | date:'mediumDate' }}</td>
+            <td>
+              <span class="new badge" [attr.data-badge-caption]="carga.estado" 
+                    [class.orange]="carga.estado === 'Pendiente'" 
+                    [class.green]="carga.estado === 'Asignada'"
+                    [class.blue]="carga.estado === 'En Ruta'"
+                    [class.indigo]="carga.estado === 'Entregada'">
+              </span>
+            </td>
+            <td>
+              <button class="btn-small waves-effect waves-light blue" (click)="abrirModalEditar(carga)">
+                <i class="material-icons">edit</i>
+              </button>
+              <button class="btn-small waves-effect waves-light red darken-1 ml-2" (click)="eliminarCarga(carga._id)">
+                <i class="material-icons">delete</i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="cargas.length === 0">
+            <td colspan="8" class="center-align grey-text">No hay cargas registradas.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Crear/Editar Carga -->
+<div id="modalCarga" class="modal">
+  <div class="modal-content">
+    <h4 class="center-align">{{ isEditing ? 'Editar Carga' : 'Crear Nueva Carga' }}</h4>
+    <form (ngSubmit)="guardarCarga()">
+      <div class="row">
+        <!-- Campo Descripción -->
+        <div class="input-field col s12 m6">
+          <input id="descripcion" type="text" [(ngModel)]="cargaSeleccionada.descripcion" name="descripcion" required>
+          <label for="descripcion" [class.active]="cargaSeleccionada.descripcion">Descripción</label>
+        </div>
+        <!-- Campo Peso -->
+        <div class="input-field col s12 m6">
+          <input id="peso" type="number" [(ngModel)]="cargaSeleccionada.peso" name="peso" required min="1">
+          <label for="peso" [class.active]="cargaSeleccionada.peso">Peso (kg)</label>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Campo Origen -->
+        <div class="input-field col s12 m6">
+          <input id="origen" type="text" [(ngModel)]="cargaSeleccionada.origen" name="origen" required>
+          <label for="origen" [class.active]="cargaSeleccionada.origen">Origen</label>
+        </div>
+        <!-- Campo Destino -->
+        <div class="input-field col s12 m6">
+          <input id="destino" type="text" [(ngModel)]="cargaSeleccionada.destino" name="destino" required>
+          <label for="destino" [class.active]="cargaSeleccionada.destino">Destino</label>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Selector de Cliente (Propietario) -->
+        <div class="input-field col s12 m6">
+          <!-- Usamos class="browser-default" para asegurar que Angular maneje el select sin problemas con Materialize -->
+          <select id="propietario_id" [(ngModel)]="cargaSeleccionada.propietario_id" name="propietario_id" class="browser-default" required>
+            <option value="" disabled selected>Seleccione el Cliente Propietario</option>
+            <!-- Iteramos sobre la lista de clientes cargada en el TS -->
+            <option *ngFor="let cliente of clientes" [value]="cliente._id">{{ cliente.nombre }} ({{ cliente.email }})</option>
+          </select>
+          <label for="propietario_id" class="active">Propietario (Cliente)</label>
+          <!-- Mensaje si no hay clientes -->
+          <p *ngIf="clientes.length === 0" class="red-text text-lighten-2">¡Advertencia! No hay clientes registrados.</p>
+        </div>
+
+        <!-- Campo Fecha de Recogida -->
+        <div class="input-field col s12 m6">
+          <!-- El tipo date es manejado nativamente por el navegador -->
+          <input id="fecha_recogida" type="date" [(ngModel)]="cargaSeleccionada.fecha_recogida" name="fecha_recogida" required>
+          <label for="fecha_recogida" [class.active]="cargaSeleccionada.fecha_recogida">Fecha de Recogida</label>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="isEditing">
+        <!-- Selector de Estado (Solo al editar) -->
+        <div class="input-field col s12">
+          <select id="estado" [(ngModel)]="cargaSeleccionada.estado" name="estado" class="browser-default" required>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Asignada">Asignada</option>
+            <option value="En Ruta">En Ruta</option>
+            <option value="Entregada">Entregada</option>
+          </select>
+          <label for="estado" class="active">Estado</label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-close waves-effect waves-red btn-flat">Cancelar</button>
+        <button type="submit" class="waves-effect waves-green btn-flat purple-text text-darken-4">
+          {{ isEditing ? 'Guardar Cambios' : 'Crear Carga' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<style>
+  /* Estilos solo para este componente */
+  .mt-3 {
+    margin-top: 20px;
+  }
+  .ml-2 {
+    margin-left: 8px;
+  }
+</style>
